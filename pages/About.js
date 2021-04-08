@@ -13,8 +13,7 @@ const Map = dynamic(() => import("../component/Map"), {
   loading: () => "Loading...",
   ssr: false
 });
-
-const token = process.env.API_KEY;
+const token = process.env.API_KEY;;
 const url = `https://api.emploi-store.fr/partenaire/labonneboite/v1/company/?distance=100&latitude=48.8534&longitude=2.3488&rome_codes=M1805&headcount=big`;
 
 export default function Home({res,pages,numberComp}) {
@@ -75,23 +74,30 @@ const  router= useRouter();
             </div>
           </button>
           )}
-          
+          <Flex mt={4} pl={20} justifyContent="space-between" maxWidth={300}>
+                <button className="focus:outline-none text-blue-600 text-sm py-2.5 px-5 rounded-md border border-blue-600 hover:bg-blue-50" 
+                onClick = {()=>router.push(`/About?page =${pages -1 }`)} >Previous</button>
+                <button className="focus:outline-none text-blue-600 text-sm py-2.5 px-5 rounded-md border border-blue-600 hover:bg-blue-50"
+                onClick = {()=>router.push(`/About?page =${pages +1 }`)} disabled={pages >= lastPage}>Next</button>
+               
+            </Flex>
           </Box>
           
       
         
         
             <br></br>
-     
+       
         
       </Layout>
       
     )}
 export async function getServerSideProps({ query: {pages= 1} }){
   
-  
+  var numberComp = 20;
+  const start = +pages === 1 ? 0 : (+pages - 1) * 3
     const res =
-    await fetch(`${url}
+    await fetch(`${url}&page_size=10
     `, {
       crossDomain:true,
       method: 'GET',
@@ -107,9 +113,10 @@ export async function getServerSideProps({ query: {pages= 1} }){
     return {
       props:{
         res: res,
-        
+        pages: +pages, 
+        numberComp: numberComp
       }
     }
-  
+ 
   
 }
